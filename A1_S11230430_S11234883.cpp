@@ -12,9 +12,10 @@ struct Student{
 	double finalExam;
 	double totalMark;
 	
-	void printAllDetails()
+	void printDetails()
 	{
-        cout << setw(20) << id << setw(20) << coursework << setw(20) << totalMark << setw(20) << grade << endl;
+		cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
+        cout << setw(20) << id << setw(20) << coursework << setw(20) << finalExam << setw(20) << totalMark << setw(20) << grade << endl;
     }
 };
 
@@ -44,7 +45,7 @@ int validateInput(int lowerLimit, int upperLimit)
     return input;
 }
 
-void welcomeMessage()
+void printWelcomeMessage()
 {
     cout << "+-------------------------------------------------+\n";
     cout << "|   WELCOME TO THE STUDENT MARKS SORTING PROGRAM  |\n";
@@ -59,6 +60,17 @@ void endProgram(bool& continueExecuting)
     cout << "+-------------------------------------+\n";
     cout << "|  Thank you for using this program!  |\n";
     cout << "+-------------------------------------+\n";
+}
+
+void displayMenu()
+{
+		cout << "Menu:" << endl;
+		cout << "1. Print Entire List with Grades" << endl;
+		cout << "2. Update Student's Marks" << endl;
+		cout << "3. Print Average marks" << endl;
+		cout << "4. Print Pass Rate" << endl;
+		cout << "5. Print the Highest Scorer's Details" << endl;
+		cout << "6. Exit Program" << endl;
 }
 
 void programStartQuit(bool& continueExecuting)
@@ -108,14 +120,6 @@ void fillArray(string fileName, int& rows, Student students[])
 	}
 }
 
-void calculateTotal(Student students[], int size)
-{
-	for (int i = 0; i < size; i++)
-	{
-		students[i].totalMark = students[i].coursework + students[i].finalExam;
-	}
-}
-
 string determineGrade(double totalMark)
 {
 	if (totalMark >= 85)
@@ -152,7 +156,7 @@ string determineGrade(double totalMark)
 	}
 }
 
-void printAllDetails(Student students[], int size)
+void printEntireList(Student students[], int size)
 {
 	cout << "\nThe Entire List of Students with Grade:" << endl;
 	cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Grade" << endl;
@@ -167,7 +171,47 @@ void printAllDetails(Student students[], int size)
 	}
 }
 
-
+void updateMark(Student students[], int size)
+{
+	string searchId;
+	bool found = false;
+	
+	cout << "Kindly enter the ID number that you would like to search. Example: S122243" << endl;
+	cin >> searchId;
+	while(cin.fail())
+	{
+		cin.clear();
+		string dummy;
+		cin >> dummy;
+		cout << "ERROR!. Invalid Input Detected" << endl;
+		cout << "Please enter letter \"S\" in uppercase together numbers only" << endl;
+		cin >> searchId;
+	}
+	
+	for (int i = 0; i < size; i++)
+	{
+		if (students[i].id == searchId)
+		{
+			found = true;
+			cout << "Enter the new coursework mark" << endl;
+			cin >> students[i].coursework;
+			
+			cout << "Enter the new final exam mark" << endl;
+			cin >> students[i].finalExam;
+			
+			students[i].totalMark = students[i].coursework + students[i].finalExam;
+			students[i].grade = determineGrade(students[i].totalMark);
+			
+			cout << "Marks Updated Successfully!" << endl;
+			students[i].printDetails();
+		}
+	}
+	
+	if (!found)
+	{
+		cout << "No students were found with the ID# " << searchId << endl;
+	}
+}
 
 int main()
 {
@@ -180,7 +224,9 @@ int main()
 	ifstream readFile;
 	readFile.open("studentData.txt");
 	
-	welcomeMessage();
+	cout << fixed << setprecision(2) << endl;
+	
+	printWelcomeMessage();
 	
 	programStartQuit(continueExecuting);
 	
@@ -191,18 +237,16 @@ int main()
 		fillArray("studentData.txt", rows, students);
 		
 		cout << endl;
-		cout << "Menu:" << endl;
-		cout << "1. Print Entire List with Grades" << endl;
-		cout << "2. Update student's marks" << endl;
-		cout << "3. Print Average marks" << endl;
-		cout << "4. Print Pass Rate" << endl;
-		cout << "5. Print the Highest Scorer's Details" << endl;
-		cout << "6. Exit Program" << endl;
+		displayMenu();
 		choice = validateInput(1,6);
 		
 		if (choice == 1)
 		{
-			printAllDetails(students, rows);
+			printEntireList(students, rows);
+		}
+		else if (choice == 2)
+		{
+			updateMark(students, rows);
 		}
 	}
 	
