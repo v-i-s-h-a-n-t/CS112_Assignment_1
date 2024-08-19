@@ -7,17 +7,31 @@ const int SIZE = 20;
 
 struct Student{
 	string id;
-	string grade;
 	double coursework;
 	double finalExam;
 	double totalMark;
 	
 	void printDetails()
 	{
-		cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
-        cout << setw(20) << id << setw(20) << coursework << setw(20) << finalExam << setw(20) << totalMark << setw(20) << grade << endl;
+		cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << endl;
+        cout << setw(20) << id << setw(20) << coursework << setw(20) << finalExam << setw(20) << totalMark << endl;
     }
 };
+
+void printAverageMarks(Student students[], int size)
+{
+    double totalMarks = 0.0;
+
+    for (int i = 0; i < size; i++)
+    {
+        students[i].totalMark = students[i].coursework + students[i].finalExam;
+        totalMarks += students[i].totalMark;
+    }
+
+    double averageMarks = totalMarks / size;
+
+    cout << "\nThe average marks for the class are: " << fixed << setprecision(2) << averageMarks << endl;
+}
 
 int validateInput(int lowerLimit, int upperLimit)
 {
@@ -31,14 +45,14 @@ int validateInput(int lowerLimit, int upperLimit)
             cin.clear();
             string dummy;
             cin >> dummy;
-            cout << "ERROR!. Invalid option was detected" << endl;
-            cout << "Kindly enter a number" << endl;
+            cout << "ERROR! Invalid option detected." << endl;
+            cout << "Please enter a number." << endl;
         }
 		else if (input < lowerLimit || input > upperLimit)
 		{
             cin.clear();
-            cout << "ERROR!. Your choice is not in range" << endl;
-            cout << "Kindly enter a number between " << lowerLimit << " and " << upperLimit << endl;
+            cout << "ERROR! Your choice is not in range." << endl;
+            cout << "Please enter a number between " << lowerLimit << " and " << upperLimit << endl;
         }
         cin >> input;
     }
@@ -64,13 +78,13 @@ void endProgram(bool& continueExecuting)
 
 void displayMenu()
 {
-		cout << "Menu:" << endl;
-		cout << "1. Print Entire List with Grades" << endl;
-		cout << "2. Update Student's Marks" << endl;
-		cout << "3. Print Average marks" << endl;
-		cout << "4. Print Pass Rate" << endl;
-		cout << "5. Print the Highest Scorer's Details" << endl;
-		cout << "6. Exit Program" << endl;
+	cout << "Menu:" << endl;
+	cout << "1. Print Entire List with Grades" << endl;
+	cout << "2. Update Student's Marks" << endl;
+	cout << "3. Print Average marks" << endl;
+	cout << "4. Print Pass Rate" << endl;
+	cout << "5. Print the Highest Scorer's Details" << endl;
+	cout << "6. Exit Program" << endl;
 }
 
 void programStartQuit(bool& continueExecuting)
@@ -83,8 +97,8 @@ void programStartQuit(bool& continueExecuting)
         cin.clear();
         string dummy;
         cin >> dummy;
-        cout << "ERROR!, invalid input was detected" << endl;
-        cout << "Please enter either \"S\" or \"Q\" only" << endl;
+        cout << "ERROR! Invalid input detected." << endl;
+        cout << "Please enter either \"S\" or \"Q\" only." << endl;
         cin >> userDecision;
     }
     
@@ -92,7 +106,6 @@ void programStartQuit(bool& continueExecuting)
 	{
 		continueExecuting = true;
 	}
-	
 	else if (userDecision == 'Q' || userDecision == 'q')
 	{
 		continueExecuting = false;
@@ -102,12 +115,12 @@ void programStartQuit(bool& continueExecuting)
 void fillArray(string fileName, int& rows, Student students[])
 {
 	string readHeader;
-	ifstream readFile;
-	readFile.open(fileName.c_str());
+	ifstream readFile(fileName.c_str());
 	
 	if (!readFile)
 	{
-		cout << "ERROR!. This file could not be found" << endl;
+		cout << "ERROR! File could not be found." << endl;
+		exit(1); // Exiting as the file is not found
 	}
 	else 
 	{
@@ -158,16 +171,15 @@ string determineGrade(double totalMark)
 
 void printEntireList(Student students[], int size)
 {
-	cout << "\nThe Entire List of Students with Grade:" << endl;
+	cout << "\nThe Entire List of Students with Grades:" << endl;
 	cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Grade" << endl;
 	
 	for (int i = 0; i < size; i++)
 	{
 		students[i].totalMark = students[i].coursework + students[i].finalExam;
 		string studentGrade = determineGrade(students[i].totalMark);
-		students[i].grade = studentGrade;
 		
-		cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << students[i].grade << endl;
+		cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << studentGrade << endl;
 	}
 }
 
@@ -176,15 +188,15 @@ void updateMark(Student students[], int size)
 	string searchId;
 	bool found = false;
 	
-	cout << "Kindly enter the ID number that you would like to search. Example: S122243" << endl;
+	cout << "Please enter the ID number you would like to search. Example: S122243" << endl;
 	cin >> searchId;
 	while(cin.fail())
 	{
 		cin.clear();
 		string dummy;
 		cin >> dummy;
-		cout << "ERROR!. Invalid Input Detected" << endl;
-		cout << "Please enter letter \"S\" in uppercase together numbers only" << endl;
+		cout << "ERROR! Invalid Input Detected." << endl;
+		cout << "Please enter letter \"S\" in uppercase followed by numbers only." << endl;
 		cin >> searchId;
 	}
 	
@@ -193,23 +205,23 @@ void updateMark(Student students[], int size)
 		if (students[i].id == searchId)
 		{
 			found = true;
-			cout << "Enter the new coursework mark" << endl;
+			cout << "Enter the new coursework mark: ";
 			cin >> students[i].coursework;
 			
-			cout << "Enter the new final exam mark" << endl;
+			cout << "Enter the new final exam mark: ";
 			cin >> students[i].finalExam;
 			
 			students[i].totalMark = students[i].coursework + students[i].finalExam;
-			students[i].grade = determineGrade(students[i].totalMark);
 			
 			cout << "Marks Updated Successfully!" << endl;
 			students[i].printDetails();
+			break;
 		}
 	}
 	
 	if (!found)
 	{
-		cout << "No students were found with the ID# " << searchId << endl;
+		cout << "No student was found with the ID# " << searchId << endl;
 	}
 }
 
@@ -221,8 +233,7 @@ int main()
 	int choice;
 	bool continueExecuting = true;
 	
-	ifstream readFile;
-	readFile.open("studentData.txt");
+	ifstream readFile("studentData.txt");
 	
 	cout << fixed << setprecision(2) << endl;
 	
@@ -247,6 +258,14 @@ int main()
 		else if (choice == 2)
 		{
 			updateMark(students, rows);
+		}
+		else if (choice == 3)
+		{
+		    printAverageMarks(students, rows);
+		}
+		else if (choice == 6)
+		{
+			endProgram(continueExecuting);
 		}
 	}
 	
