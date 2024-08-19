@@ -151,14 +151,16 @@ string determineGrade(double totalMark)
 void printEntireList(Student students[], int size)
 {
 	cout << "\nThe Entire List of Students with Grades:" << endl;
-	cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Grade" << endl;
+	cout << "\n" << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Grade" << endl;
+	cout << "-----------------------------------------------------------------" << endl;
 	
 	for (int i = 0; i < size; i++)
 	{
 		students[i].totalMark = students[i].coursework + students[i].finalExam;
 		string studentGrade = determineGrade(students[i].totalMark);
 		
-		cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << studentGrade << endl;
+		cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << setw(20) << studentGrade << endl;
+		cout << "-----------------------------------------------------------------" << endl;
 	}
 }
 
@@ -167,7 +169,7 @@ void updateMark(Student students[], int size)
 	string searchId;
 	bool found = false;
 	
-	cout << "Please enter the ID number you would like to search. Example: S00005" << endl;
+	cout << "Please enter the ID number you would like to search for. Example: S00005" << endl;
 	cin >> searchId;
 	while(cin.fail())
 	{
@@ -212,9 +214,8 @@ void updateMark(Student students[], int size)
 			string studentGrade = determineGrade(students[i].totalMark);
 			
 			cout << "\nMarks Updated Successfully!" << endl;
-			cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
+			cout << "\n" << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
 			cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << students[i].totalMark << setw(20) << studentGrade << endl;
-			break;
 		}
 	}
 	
@@ -276,7 +277,7 @@ void printHighestScorersDetails(Student students[], int size)
 	string studentGrade = determineGrade(students[highestScorerIndex].totalMark);
 	
 	cout << "\nHighest Scorer's Full Details:" << endl;
-	cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
+	cout << "\n" << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
 	cout << left << setw(20) << students[highestScorerIndex].id << setw(20) << students[highestScorerIndex].coursework << setw(20) << students[highestScorerIndex].finalExam << setw(20) << students[highestScorerIndex].totalMark << setw(20) << studentGrade << endl;
 }
 
