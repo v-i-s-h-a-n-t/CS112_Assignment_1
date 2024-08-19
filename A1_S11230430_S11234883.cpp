@@ -11,27 +11,7 @@ struct Student{
 	double finalExam;
 	double totalMark;
 	
-	void printDetails()
-	{
-		cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << endl;
-        cout << setw(20) << id << setw(20) << coursework << setw(20) << finalExam << setw(20) << totalMark << endl;
-    }
 };
-
-void printAverageMarks(Student students[], int size)
-{
-    double totalMarks = 0.0;
-
-    for (int i = 0; i < size; i++)
-    {
-        students[i].totalMark = students[i].coursework + students[i].finalExam;
-        totalMarks += students[i].totalMark;
-    }
-
-    double averageMarks = totalMarks / size;
-
-    cout << "\nThe average marks for the class are: " << fixed << setprecision(2) << averageMarks << endl;
-}
 
 int validateInput(int lowerLimit, int upperLimit)
 {
@@ -62,7 +42,7 @@ int validateInput(int lowerLimit, int upperLimit)
 void printWelcomeMessage()
 {
     cout << "+-------------------------------------------------+\n";
-    cout << "|   WELCOME TO THE STUDENT MARKS SORTING PROGRAM  |\n";
+    cout << "|      WELCOME TO THE STUDENT GRADES PROGRAM      |\n";
     cout << "+-------------------------------------------------+\n";
 }
 
@@ -85,28 +65,27 @@ void displayMenu()
 	cout << "4. Print Pass Rate" << endl;
 	cout << "5. Print the Highest Scorer's Details" << endl;
 	cout << "6. Exit Program" << endl;
+	cout << "\nEnter the number corresponding to your choice" << endl;
 }
 
 void programStartQuit(bool& continueExecuting)
 {
-    char userDecision;
+    string userDecision;
     cout << "Enter S to start or Q to quit" << endl;
     cin >> userDecision;
     
-    while(userDecision != 'S' && userDecision != 's' && userDecision != 'Q' && userDecision != 'q') {
+    while(userDecision != "S" && userDecision != "s" && userDecision != "Q" && userDecision != "q") {
         cin.clear();
-        string dummy;
-        cin >> dummy;
         cout << "ERROR! Invalid input detected." << endl;
         cout << "Please enter either \"S\" or \"Q\" only." << endl;
         cin >> userDecision;
     }
     
-    if (userDecision == 'S' || userDecision == 's')
+    if (userDecision == "S" || userDecision == "s")
 	{
 		continueExecuting = true;
 	}
-	else if (userDecision == 'Q' || userDecision == 'q')
+	else if (userDecision == "Q" || userDecision == "q")
 	{
 		continueExecuting = false;
 	}
@@ -188,7 +167,7 @@ void updateMark(Student students[], int size)
 	string searchId;
 	bool found = false;
 	
-	cout << "Please enter the ID number you would like to search. Example: S122243" << endl;
+	cout << "Please enter the ID number you would like to search. Example: S00005" << endl;
 	cin >> searchId;
 	while(cin.fail())
 	{
@@ -207,26 +186,109 @@ void updateMark(Student students[], int size)
 			found = true;
 			cout << "Enter the new coursework mark: ";
 			cin >> students[i].coursework;
+			while(cin.fail())
+			{
+				cin.clear();
+				string dummy;
+				cin >> dummy;
+				cout << "ERROR! Text Input Detected." << endl;
+				cout << "Please enter numbers only" << endl;
+				cin >> students[i].coursework;
+			}
 			
 			cout << "Enter the new final exam mark: ";
 			cin >> students[i].finalExam;
+			while(cin.fail())
+			{
+				cin.clear();
+				string dummy;
+				cin >> dummy;
+				cout << "ERROR! Text Input Detected." << endl;
+				cout << "Please enter numbers only" << endl;
+				cin >> students[i].finalExam;
+			}
 			
 			students[i].totalMark = students[i].coursework + students[i].finalExam;
+			string studentGrade = determineGrade(students[i].totalMark);
 			
-			cout << "Marks Updated Successfully!" << endl;
-			students[i].printDetails();
+			cout << "\nMarks Updated Successfully!" << endl;
+			cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
+			cout << left << setw(20) << students[i].id << setw(20) << students[i].coursework << setw(20) << students[i].finalExam << setw(20) << students[i].totalMark << setw(20) << studentGrade << endl;
 			break;
 		}
 	}
 	
 	if (!found)
 	{
-		cout << "No student was found with the ID# " << searchId << endl;
+		cout << "\nNo student was found with the ID# " << searchId << endl;
 	}
+}
+
+void printAverageMarks(Student students[], int size)
+{
+    double totalMarks = 0.0;
+
+    for (int i = 0; i < size; i++)
+    {
+        students[i].totalMark = students[i].coursework + students[i].finalExam;
+        totalMarks += students[i].totalMark;
+    }
+
+    double averageMarks = totalMarks / size;
+
+    cout << "\nThe average mark for the class is: " << fixed << setprecision(2) << averageMarks << endl;
+}
+
+void printPassRate(Student students[], int size)
+{
+	double passRate = 0;
+	double passedCounter = 0;
+	
+	for (int i = 0; i < size; i++)
+	{
+		students[i].totalMark = students[i].coursework + students[i].finalExam;
+		
+		if(students[i].totalMark >= 50)
+		{
+			passedCounter++;
+		}
+	}
+	
+	passRate = (passedCounter/size)*100;
+	
+	cout << "\nThe pass rate of the class is " << passRate << "%" << endl;	
+}
+
+void printHighestScorersDetails(Student students[], int size)
+{
+	int highestScorerIndex = 0;
+	
+	for (int i = 0; i < size; i++)
+	{
+		students[i].totalMark = students[i].coursework + students[i].finalExam;
+		
+		if(students[i].totalMark > students[highestScorerIndex].totalMark)
+		{
+			highestScorerIndex = i;
+		}
+	}
+	
+	string studentGrade = determineGrade(students[highestScorerIndex].totalMark);
+	
+	cout << "\nHighest Scorer's Full Details:" << endl;
+	cout << left << setw(20) << "ID" << setw(20) << "Coursework" << setw(20) << "Final Exam" << setw(20) << "Total" << setw(20) << "Grade" << endl;
+	cout << left << setw(20) << students[highestScorerIndex].id << setw(20) << students[highestScorerIndex].coursework << setw(20) << students[highestScorerIndex].finalExam << setw(20) << students[highestScorerIndex].totalMark << setw(20) << studentGrade << endl;
 }
 
 int main()
 {
+	const int CHOICE1 = 1;
+	const int CHOICE2 = 2;
+	const int CHOICE3 = 3;
+	const int CHOICE4 = 4;
+	const int CHOICE5 = 5;
+	const int CHOICE6 = 6;
+	
 	Student students[SIZE];
 	int size = 0;
 	int rows = 0;
@@ -249,21 +311,29 @@ int main()
 		
 		cout << endl;
 		displayMenu();
-		choice = validateInput(1,6);
+		choice = validateInput(CHOICE1, CHOICE6);
 		
-		if (choice == 1)
+		if (choice == CHOICE1)
 		{
 			printEntireList(students, rows);
 		}
-		else if (choice == 2)
+		else if (choice == CHOICE2)
 		{
 			updateMark(students, rows);
 		}
-		else if (choice == 3)
+		else if (choice == CHOICE3)
 		{
 		    printAverageMarks(students, rows);
 		}
-		else if (choice == 6)
+		else if (choice == CHOICE4)
+		{
+			printPassRate(students, rows);
+		}
+		else if (choice == CHOICE5)
+		{
+			printHighestScorersDetails(students, rows);
+		}
+		else
 		{
 			endProgram(continueExecuting);
 		}
